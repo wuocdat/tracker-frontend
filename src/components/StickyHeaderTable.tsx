@@ -1,4 +1,10 @@
-import { ScrollArea, Table, createStyles, rem } from "@mantine/core";
+import {
+    ScrollArea,
+    Table,
+    TableProps,
+    createStyles,
+    rem,
+} from "@mantine/core";
 import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
@@ -24,12 +30,16 @@ const useStyles = createStyles((theme) => ({
     },
 }));
 
-interface StickyHeaderTableProps {
+interface StickyHeaderTableProps extends TableProps {
     rows: JSX.Element[];
     header: JSX.Element;
 }
 
-const StickyHeaderTable = ({ rows, header }: StickyHeaderTableProps) => {
+const StickyHeaderTable = ({
+    rows,
+    header,
+    ...props
+}: StickyHeaderTableProps) => {
     const { classes, cx } = useStyles();
     const [scrolled, setScrolled] = useState(false);
 
@@ -38,7 +48,14 @@ const StickyHeaderTable = ({ rows, header }: StickyHeaderTableProps) => {
             mah="100%"
             onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
         >
-            <Table fontSize="sm" withBorder striped highlightOnHover miw={700}>
+            <Table
+                fontSize="sm"
+                withBorder
+                striped
+                highlightOnHover
+                miw={700}
+                {...props}
+            >
                 <thead
                     className={cx(classes.header, {
                         [classes.scrolled]: scrolled,

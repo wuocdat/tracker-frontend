@@ -15,7 +15,7 @@ function App() {
                 }
                 styles={(theme) => ({
                     main: {
-                        backgroundColor: theme.colors.gray[0],
+                        // backgroundColor: theme.colors.gray[0],
                         height: "100vh",
                         overflow: "hidden",
                     },
