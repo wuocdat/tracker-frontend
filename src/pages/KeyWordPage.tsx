@@ -9,21 +9,42 @@ import {
 } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 
-import { PAGES, getKeywordMockData } from "../constants";
+import { PAGES } from "../constants";
 import StickyHeaderTable from "../components/StickyHeaderTable";
 import PageHeader from "../components/PageHeader";
 import { CenterTd, CenterTh } from "../components/CenterTh";
 import CreateNewModal from "../components/CreateNewModal";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { KeyWord } from "../types";
+import useError from "../hooks/useError";
+import { KeywordService } from "../services";
+import { formatTime } from "../utils";
 
 const KeyWordPage = () => {
-    const data = getKeywordMockData();
+    const [keywords, setKeywords] = useState<KeyWord[]>([]);
 
     const theme = useMantineTheme();
+    const showError = useError();
 
     const [opened, { open, close }] = useDisclosure(false);
     const [keywordId, setKeywordId] = useState<string>("");
+
+    const fetchKeywords = async () => {
+        try {
+            const { data } = await KeywordService.getKeywords();
+
+            if (data) {
+                setKeywords(data);
+            }
+        } catch (error) {
+            showError(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchKeywords();
+    }, []);
 
     const header = (
         <tr>
@@ -35,11 +56,11 @@ const KeyWordPage = () => {
         </tr>
     );
 
-    const rows = data.map((row) => (
-        <tr key={row.id}>
-            <CenterTd width={50} title={row.id} />
+    const rows = keywords.map((row, index) => (
+        <tr key={row._id}>
+            <CenterTd width={50} title={index + 1} />
             <td style={{ textAlign: "center" }}>
-                {keywordId === row.id ? (
+                {keywordId === row._id ? (
                     <TextInput
                         placeholder="Enter new name"
                         defaultValue={row.text}
@@ -48,8 +69,8 @@ const KeyWordPage = () => {
                     row.text
                 )}
             </td>
-            <CenterTd width={300} title={row.createdAt} />
-            <CenterTd width={300} title={row.updatedAt} />
+            <CenterTd width={300} title={formatTime(row.created_at)} />
+            <CenterTd width={300} title={formatTime(row.updated_at)} />
             <td width={"200px"}>
                 {
                     <Group position="center">
@@ -57,7 +78,7 @@ const KeyWordPage = () => {
                             color={theme.primaryColor}
                             variant="transparent"
                             onClick={() => {
-                                setKeywordId(row.id);
+                                setKeywordId(row._id);
                             }}
                         >
                             <IconEdit size="1.125rem" />

@@ -1,8 +1,8 @@
 import { EAccType, EThreadStatus } from "./enums";
 
 type BaseType = {
-    createdAt: string;
-    updatedAt: string;
+    created_at: string;
+    updated_at: string;
 };
 
 export type PageType = {
@@ -11,9 +11,9 @@ export type PageType = {
 };
 
 export type KeyWord = BaseType & {
-    id: string;
+    _id: string;
     text: string;
-    createdAt: string;
+    revision_id: string | null;
 };
 
 export type MessageContent = BaseType & {
