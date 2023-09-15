@@ -19,17 +19,22 @@ import { MessageContent } from "../types";
 import useError from "../hooks/useError";
 import { notifications } from "@mantine/notifications";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import DeleteModal from "../components/DeleteModal";
 
 const MessagesContent = () => {
   const theme = useMantineTheme();
 
   const [messages, setMessages] = useState<MessageContent[]>([]);
   const [messageId, setMessageId] = useState<string | null>();
+  const [id, setId] = useState<string | null>();
+
   const [inputValue, setInputValue] = useState<string>("");
 
   const showError = useError();
 
   const [opened, { open, close }] = useDisclosure(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const fetchMessages = async () => {
     try {
@@ -96,6 +101,9 @@ const MessagesContent = () => {
       handleUpdateMessage();
     }
   };
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
 
   useEffect(() => {
     fetchMessages();
@@ -148,7 +156,9 @@ const MessagesContent = () => {
               color="red"
               variant="transparent"
               onClick={() => {
-                handleDeleteMessage(row.id);
+                setShowDeleteModal(true);
+                setId(row.id);
+                setInputValue(row.content);
               }}
             >
               <IconTrash size="1.125rem" />
@@ -172,6 +182,16 @@ const MessagesContent = () => {
         onClickCreateButton={handleCreateMessage}
         label="Add message:"
         title={<Title order={3}>Add new message</Title>}
+      />
+
+      <DeleteModal
+        text={inputValue}
+        opened={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onDelete={() => {
+          handleCloseDeleteModal();
+          handleDeleteMessage(id || "");
+        }}
       />
     </Stack>
   );

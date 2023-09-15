@@ -21,6 +21,7 @@ import useError from "../hooks/useError";
 import { KeywordService } from "../services";
 import { formatTime } from "../utils";
 import { notifications } from "@mantine/notifications";
+import DeleteModal from "../components/DeleteModal";
 
 const KeyWordPage = () => {
   const [keywords, setKeywords] = useState<KeyWord[]>([]);
@@ -31,6 +32,9 @@ const KeyWordPage = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [keywordId, setKeywordId] = useState<string | null>();
   const [inputValue, setInputValue] = useState<string>("");
+  const [id, setId] = useState<string | null>();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const fetchKeywords = async () => {
     try {
@@ -99,6 +103,10 @@ const KeyWordPage = () => {
     }
   };
 
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
   useEffect(() => {
     fetchKeywords();
   }, []);
@@ -150,7 +158,9 @@ const KeyWordPage = () => {
               color="red"
               variant="transparent"
               onClick={() => {
-                handleDeleteKeyWord(row.id);
+                setShowDeleteModal(true);
+                setId(row.id);
+                setInputValue(row.text);
               }}
             >
               <IconTrash size="1.125rem" />
@@ -173,6 +183,16 @@ const KeyWordPage = () => {
         onClickCreateButton={handeCreateKeyword}
         label="Add keywords:"
         title={<Title order={3}>Create new keywords</Title>}
+      />
+
+      <DeleteModal
+        text={inputValue}
+        opened={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onDelete={() => {
+          handleCloseDeleteModal();
+          handleDeleteKeyWord(id || "");
+        }}
       />
     </Stack>
   );
