@@ -1,4 +1,4 @@
-import { EAccType, EThreadStatus } from "./enums";
+import { ECommand } from "./enums";
 
 type BaseType = {
   created_at: string;
@@ -19,21 +19,27 @@ export type KeyWord = BaseType & {
 export type MessageContent = BaseType & {
   id: string;
   content: string;
+  revision_id: string | null;
 };
 
 export type GroupType = BaseType & {
-  type: EAccType;
-  uid: string;
+  id: string;
+  type: string | null;
+  revision_id: string | null;
+  name: string | null;
+  monitoring_status: boolean | null;
+  status: boolean | null;
 };
 
 export type Bot = BaseType & {
-  uui: string;
-  cookie: string;
-  username: string;
-  pass: string;
-  _2fa: string;
+  id: string;
+  revision_id: string | null;
+  name: string | null;
+  password: string;
+  fa_code: string;
   profile: string;
-  status: string;
+  status: boolean;
+  is_logged_in: boolean;
 };
 
 export type User = BaseType & {
@@ -44,22 +50,39 @@ export type User = BaseType & {
 };
 
 export type Thread = BaseType & {
-  name: string;
-  status: EThreadStatus;
+  name?: string | null;
+  status: string;
 };
 
-export type updateKeywordType = {
+export type UpdateKeywordType = {
   text: string;
   id: string;
 };
 
-export type updateMessageType = {
+export type UpdateMessageType = {
   content: string;
   id: string;
 };
 
-export type updateBotType = {
+export type UpdateBotType = {
   id: string;
   password: string;
   fa_code: string;
+};
+
+export type SettingsType = BaseType & {
+  id: string;
+  revision_id: string | null;
+  bots: string[];
+  pages: string[];
+  keywords: string[];
+  time_interval: number;
+  command: ECommand;
+};
+
+export type CreateSettings = {
+  bots: string[];
+  pages: string[];
+  keywords: string[];
+  time_interval: number;
 };

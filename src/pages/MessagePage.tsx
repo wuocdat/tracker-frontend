@@ -27,7 +27,6 @@ const MessagesContent = () => {
   const [messages, setMessages] = useState<MessageContent[]>([]);
   const [messageId, setMessageId] = useState<string | null>();
   const [id, setId] = useState<string | null>();
-
   const [inputValue, setInputValue] = useState<string>("");
 
   const showError = useError();
